@@ -82,11 +82,10 @@ def delete_movie():
     collection = db["movies"]
     args = get_args(["id"])
 
-    movie_to_delete = {"_id": args[0]}
-    show = collection.find_one(movie_to_delete)
+    show = collection.find_one({"_id": args[0]})
 
     if show is not None:
-        collection.delete_one(movie_to_delete)
+        collection.delete_one(show)
         return page_return('SUCCESS', 200, "Film supprimé")
     else:
         return page_return('ERROR', 404, 'Aucun film à cet Id')
@@ -104,6 +103,7 @@ def vote(id):
     args = get_args(['like', 'dislike'])
     like, dislike = args[0], args[1]
     movie = collection.find_one({'_id': id})
+
     if movie is None:
         return page_return("ERROR", 404, "Film Introuvable")
 
@@ -136,9 +136,7 @@ def actors():
 @app.route("/actors", methods=["POST"])
 def add_actors():
     collection = db["actors"]
-    add_args = ['id', 'name', 'age', 'genre']
-    add_args = get_args(add_args)
-
+    add_args = get_args(['id', 'name', 'age', 'genre'])
     collection.insert({
         "_id": add_args[0],
         "name": add_args[1],
@@ -152,8 +150,7 @@ def add_actors():
 @app.route("/actors", methods=["DELETE"])
 def del_actors():
     collection = db["actors"]
-    add_args = ['id', 'name', 'age', 'genre']
-    add_args = get_args(add_args)
+    add_args = get_args(['id', 'name', 'age', 'genre'])
 
     collection.delete_one({
         "_id": add_args[0],
