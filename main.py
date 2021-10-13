@@ -28,6 +28,16 @@ def home():
 def movies():
     return page_return('SUCCESS', 200, 'Movies')
 
+@app.route("/movies", methods=["POST"])
+def add_movies():
+    movies_id = request.args['id']
+    title = request.args['title']
+    synopsis = request.args['synopsis']
+    distribution = request.args['distribution']
+    release_date = request.args['release_date']
+    duration = request.args['duration']
+    likes = 0
+    dislikes = 0
 
 @app.route("/movies/find")
 def find_movies():
