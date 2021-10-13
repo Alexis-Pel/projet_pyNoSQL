@@ -53,31 +53,24 @@ def add_movies():
     :return: string: Message de succès ou erreur
     """
     collection = db["movies"]
-    movies_id = request.args['id']
-    title = request.args['title']
-    category = request.args['category']
-    synopsis = request.args['synopsis']
-    distribution = request.args['distribution']
-    distrib = distribution.split(', ')
-    release_date = request.args['release_date']
-    duration = request.args['duration']
+    add_args = ['id', 'title', 'category', 'synopsis', 'distribution', 'release_date', 'duration']
+    add_args = get_args(add_args)
+    distribution = add_args[4].split(',')
     likes = 0
     dislikes = 0
-    try:
-        collection.insert({
-            "_id": movies_id,
-            "title": title,
-            "category": category,
-            "synopsis": synopsis,
-            "distribution": distrib,
-            "release_date": release_date,
-            "duration": duration,
-            "likes": likes,
-            "dislikes": dislikes
-        })
-        return page_return('SUCCESS', 200, 'Film ajouté')
-    except:
-        return page_return('ERROR', 400, 'Bad Request - La syntaxe de la requête est erronée.')
+
+    collection.insert({
+        "_id": add_args[0],
+        "title": add_args[1],
+        "category": add_args[2],
+        "synopsis": add_args[3],
+        "distribution": distribution,
+        "release_date": add_args[5],
+        "duration": add_args[6],
+        "likes": likes,
+        "dislikes": dislikes
+    })
+    return page_return('SUCCESS', 200, 'Film ajouté')
 
 
 
