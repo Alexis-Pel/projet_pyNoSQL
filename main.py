@@ -89,15 +89,22 @@ def vote(id):
 
 @app.route("/actors", methods=["GET"])
 def actors():
-    return page_return('SUCCESS', 200, 'Actors')
+    collection = db["actors"]
+    actor_list = []
+    for actor in collection.find():
+        actor_list.append(actor)
+    if len(actor_list) == 0:
+        return page_return('SUCCESS', 200, 'No Actors')
+    else:
+        return page_return('SUCCESS', 200, str(actor_list))
 
 
 @app.route("/actors", methods=["POST"])
 def add_actors():
     id = request.args ['id']
     name = request.args['name']
-    year = request.args['year']
-    kind = request.args['kind']
+    age = request.args['age']
+    genre = request.args['genre']
 
     return page_return('SUCCESS', 200, 'Actors')
 
