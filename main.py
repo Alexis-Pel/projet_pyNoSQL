@@ -35,16 +35,40 @@ def movies():
     else:
         return page_return('SUCCESS', 200, str(movie_list))
 
+
 @app.route("/movies", methods=["POST"])
 def add_movies():
+    """
+    Cette fonction permet d'ajouter un film dans la base de données
+    :return: string: Message de succès ou erreur
+    """
+    collection = db["movies"]
     movies_id = request.args['id']
     title = request.args['title']
+    category = request.args['category']
     synopsis = request.args['synopsis']
     distribution = request.args['distribution']
+    distrib = distribution.split(', ')
     release_date = request.args['release_date']
     duration = request.args['duration']
     likes = 0
     dislikes = 0
+    try:
+        collection.insert({
+            "_id": movies_id,
+            "title": title,
+            "category": category,
+            "synopsis": synopsis,
+            "distribution": distrib,
+            "release_date": release_date,
+            "duration": duration,
+            "likes": likes,
+            "dislikes": dislikes
+        })
+        return page_return('SUCCESS', 200, 'Film ajouté')
+    except:
+        return page_return('ERROR', 400, 'Bad Request - La syntaxe de la requête est erronée.')
+
 
 @app.route("/movies/find")
 def find_movies():
