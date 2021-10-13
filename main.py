@@ -24,11 +24,6 @@ def page_return(type, code, message):
 
 @app.route("/")
 def home():
-    collection.insert_one(
-        {'_id': 0, 'title': 'Deadpool', 'category': 'Super-Hero', 'synopsis': "Deadpool, est l'anti-héros le plus atypique de l'univers Marvel. A l'origine, il s'appelle Wade Wilson : un ancien militaire des Forces Spéciales devenu mercenaire. Après avoir subi une expérimentation hors norme qui va accélérer ses pouvoirs de guérison, il va devenir Deadpool. Armé de ses nouvelles capacités et d'un humour noir survolté, Deadpool va traquer l'homme qui a bien failli anéantir sa vie.", 'distribution': ['Ryan Reynolds',
-                                                                                                   'Morena Baccarin'],
-         'release_date': '2016', 'duration': '108','likes': 1028, 'dislikes': 256})
-
     return page_return('SUCCESS', 200, 'Accueil')
 
 
@@ -57,8 +52,18 @@ def vote(id):
     return page_return('SUCCESS', 200, 'Vote')
 
 
-@app.route("/actors")
+@app.route("/actors", methods=["GET"])
 def actors():
+    return page_return('SUCCESS', 200, 'Actors')
+
+
+@app.route("/actors", methods=["POST"])
+def add_actors():
+    id = request.args ['id']
+    name = request.args['name']
+    year = request.args['year']
+    kind = request.args['kind']
+
     return page_return('SUCCESS', 200, 'Actors')
 
 
