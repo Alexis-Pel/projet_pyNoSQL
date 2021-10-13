@@ -117,12 +117,33 @@ def actors():
 
 @app.route("/actors", methods=["POST"])
 def add_actors():
-    id = request.args ['id']
-    name = request.args['name']
-    age = request.args['age']
-    genre = request.args['genre']
+    collection = db["actors"]
+    add_args = ['id', 'name', 'age', 'genre']
+    add_args = get_args(add_args)
 
-    return page_return('SUCCESS', 200, 'Actors')
+    collection.insert({
+        "_id" : add_args[0],
+        "name" : add_args[1],
+        "age" : add_args[2],
+        "genre" : add_args[3]
+    })
+
+    return page_return('SUCCESS', 200, 'Actors About')
+
+@app.route("/actors", methods=["DELETE"])
+def del_actors():
+    collection = db["actors"]
+    add_args = ['id', 'name', 'age', 'genre']
+    add_args = get_args(add_args)
+
+    collection.delete_one({
+        "_id" : add_args[0],
+        "name" : add_args[1],
+        "age" : add_args[2],
+        "genre" : add_args[3]
+    })
+
+    return page_return('SUCCESS', 200, 'Actors Delete')
 
 
 @app.route("/actor/find")
