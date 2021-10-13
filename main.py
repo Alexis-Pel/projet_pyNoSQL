@@ -98,6 +98,12 @@ def find_movies():
 
 @app.route("/vote/<int:id>", methods=["POST"])
 def vote(id):
+    """
+    Permet d'ajouter un like / dislike à un film
+    :param id: L'id du film qui reçoit le vote
+    :return: type: json : Si film introuvable : 'film Introuvable' | Si pas de vote : 'Veuillez verifier le vote' |
+    Si correct  : 'Vote effectué' / code html
+    """
     global phrase
     collection = db["movies"]
     args = get_args(['like', 'dislike'])
@@ -123,6 +129,10 @@ def vote(id):
 
 @app.route("/actors", methods=["GET"])
 def actors():
+    """
+    Permet d'afficher une liste des acteurs
+    :return: type: json : Si Acteurs : Liste des acteurs | Si non : 'No Actors' / Code html
+    """
     collection = db["actors"]
     actor_list = []
     for actor in collection.find():
