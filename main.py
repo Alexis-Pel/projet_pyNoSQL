@@ -1,14 +1,30 @@
-import flask
+from flask import Flask
+from flask import request
+from flask import make_response
 from pymongo import mongo_client
+import os
+
+app = Flask(__name__)
+host = os.environ["HOST"]
+# username = os.environ["DB_USER"]
+# password = os.environ["DB_PASS"]
+# cluster = os.environ["CLUSTER"]
+# database_name = os.environ["DB"]
+# collection_name = os.environ["COLLECTION"]
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+@app.route("/")
+def home():
+    return page_return('SUCCESS', 200, 'Accueil')
 
 
-# Press the green button in the gutter to run the script.
+def page_return(type, code, message):
+    return make_response({"type": type, "code": code, "message": message}, code)
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app.run(
+        host=host,
+        port=8001,
+        debug=True
+    )
