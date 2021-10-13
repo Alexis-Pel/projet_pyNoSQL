@@ -48,14 +48,30 @@ def movies():
 
 @app.route("/movies", methods=["POST"])
 def add_movies():
-    movies_id = request.args['id']
-    title = request.args['title']
-    synopsis = request.args['synopsis']
-    distribution = request.args['distribution']
-    release_date = request.args['release_date']
-    duration = request.args['duration']
+    """
+    Cette fonction permet d'ajouter un film dans la base de données
+    :return: string: Message de succès ou erreur
+    """
+    collection = db["movies"]
+    add_args = ['id', 'title', 'category', 'synopsis', 'distribution', 'release_date', 'duration']
+    add_args = get_args(add_args)
+    distribution = add_args[4].split(',')
     likes = 0
     dislikes = 0
+
+    collection.insert({
+        "_id": add_args[0],
+        "title": add_args[1],
+        "category": add_args[2],
+        "synopsis": add_args[3],
+        "distribution": distribution,
+        "release_date": add_args[5],
+        "duration": add_args[6],
+        "likes": likes,
+        "dislikes": dislikes
+    })
+    return page_return('SUCCESS', 200, 'Film ajouté')
+
 
 
 @app.route("/movies/find")
@@ -87,9 +103,47 @@ def vote(id):
     return page_return('SUCCESS', 200, 'Vote effectué')
 
 
-@app.route("/actors")
+@app.route("/actors", methods=["GET"])
 def actors():
-    return page_return('SUCCESS', 200, 'Actors')
+    collection = db["actors"]
+    actor_list = []
+    for actor in collection.find():
+        actor_list.append(actor)
+    if len(actor_list) == 0:
+        return page_return('SUCCESS', 200, 'No Actors')
+    else:
+        return page_return('SUCCESS', 200, str(actor_list))
+
+
+@app.route("/actors", methods=["POST"])
+def add_actors():
+    collection = db["actors"]
+    add_args = ['id', 'name', 'age', 'genre']
+    add_args = get_args(add_args)
+
+    collection.insert({
+        "_id" : add_args[0],
+        "name" : add_args[1],
+        "age" : add_args[2],
+        "genre" : add_args[3]
+    })
+
+    return page_return('SUCCESS', 200, 'Actors About')
+
+@app.route("/actors", methods=["DELETE"])
+def del_actors():
+    collection = db["actors"]
+    add_args = ['id', 'name', 'age', 'genre']
+    add_args = get_args(add_args)
+
+    collection.delete_one({
+        "_id" : add_args[0],
+        "name" : add_args[1],
+        "age" : add_args[2],
+        "genre" : add_args[3]
+    })
+
+    return page_return('SUCCESS', 200, 'Actors Delete')
 
 
 @app.route("/actors/find")
