@@ -73,7 +73,6 @@ def add_movies():
     return page_return('SUCCESS', 200, 'Film ajouté')
 
 
-
 @app.route("/movies/find")
 def find_movies():
     return page_return('SUCCESS', 200, 'Search Movies')
@@ -122,13 +121,14 @@ def add_actors():
     add_args = get_args(add_args)
 
     collection.insert({
-        "_id" : add_args[0],
-        "name" : add_args[1],
-        "age" : add_args[2],
-        "genre" : add_args[3]
+        "_id": add_args[0],
+        "name": add_args[1],
+        "age": add_args[2],
+        "genre": add_args[3]
     })
 
     return page_return('SUCCESS', 200, 'Actors About')
+
 
 @app.route("/actors", methods=["DELETE"])
 def del_actors():
@@ -137,10 +137,10 @@ def del_actors():
     add_args = get_args(add_args)
 
     collection.delete_one({
-        "_id" : add_args[0],
-        "name" : add_args[1],
-        "age" : add_args[2],
-        "genre" : add_args[3]
+        "_id": add_args[0],
+        "name": add_args[1],
+        "age": add_args[2],
+        "genre": add_args[3]
     })
 
     return page_return('SUCCESS', 200, 'Actors Delete')
