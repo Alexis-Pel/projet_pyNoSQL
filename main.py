@@ -11,11 +11,8 @@ username = os.environ["DB_USER"]
 password = os.environ["DB_PASS"]
 cluster = os.environ["CLUSTER"]
 database_name = os.environ["DB"]
-collection_name = "movies"
-
 client = MongoClient(f"mongodb+srv://{username}:{password}@{cluster}/{database_name}?retryWrites=true&w=majority")
 db = client[database_name]
-collection = db[collection_name]
 
 
 def page_return(type, code, message):
@@ -29,7 +26,14 @@ def home():
 
 @app.route("/movies", methods=["GET"])
 def movies():
-    return page_return('SUCCESS', 200, 'Get_Movies')
+    collection = db["movies"]
+    movie_list = []
+    for movie in collection.find():
+        movie_list.append(movie)
+    if len(movie_list) == 0:
+        return page_return('SUCCESS', 200, 'No Movies')
+    else:
+        return page_return('SUCCESS', 200, str(movie_list))
 
 @app.route("/movies", methods=["POST"])
 def add_movies():
