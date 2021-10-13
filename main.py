@@ -73,6 +73,24 @@ def add_movies():
     return page_return('SUCCESS', 200, 'Film ajouté')
 
 
+@app.route("/movies", methods=["DELETE"])
+def delete_movie():
+    """
+    Cette fonction permet de supprimer un film de la base de données
+    :return: Une message de succès ou d'erreur
+    """
+    collection = db["movies"]
+    args = get_args(["id"])
+
+    movie_to_delete = {"_id": args[0]}
+    show = collection.find_one(movie_to_delete)
+
+    if show is not None:
+        collection.delete_one(movie_to_delete)
+        return page_return('SUCCESS', 200, "Film supprimé")
+    else:
+        return page_return('ERROR', 404, 'Aucun film à cet Id')
+
 
 @app.route("/movies/find")
 def find_movies():
