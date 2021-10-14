@@ -59,7 +59,7 @@ def delete_movie(db):
     collection = db["movies"]
     args = get_args(["id"])
 
-    show = collection.find_one({"_id": args[0]})
+    show = collection.find_one({"_id": int(args[0])})
 
     if show is not None:
         collection.delete_one(show)
