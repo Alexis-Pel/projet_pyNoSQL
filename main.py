@@ -145,6 +145,10 @@ def actors():
 
 @app.route("/actors", methods=["POST"])
 def add_actors():
+    """
+    Cette fonction permet d'ajouter un actor dans la base de données
+    :return: string: Message de succès ou erreur
+    """
     collection = db["actors"]
     add_args = get_args(['id', 'name', 'age', 'genre'])
     collection.insert({
@@ -159,21 +163,29 @@ def add_actors():
 
 @app.route("/actors", methods=["DELETE"])
 def del_actors():
+    """
+    Cette fonction permet de supprimer un actor dans la base de données
+    :return: string: Message de succès ou erreur
+    """
     collection = db["actors"]
-    add_args = get_args(['id', 'name', 'age', 'genre'])
+    del_args = get_args(['id', 'name', 'age', 'genre'])
 
-    collection.delete_one({
-        "_id": add_args[0],
-        "name": add_args[1],
-        "age": add_args[2],
-        "genre": add_args[3]
-    })
 
-    return page_return('SUCCESS', 200, 'Actors Delete')
+    show = collection.find_one({"_id": del_args[0]})
+
+    if show is not None:
+        collection.delete_one(show)
+        return page_return('SUCCESS', 200, "Actor Delete")
+    else:
+        return page_return('ERROR', 404, 'Aucun acteur à cet Id')
 
 
 @app.route("/actors/find")
 def find_actors():
+    """
+    Cette fonction permet de chercher un actor dans la base de données
+    :return: string: Message de succès ou erreur
+    """
     collections = db['actors']
     search = {}
     actors = []
