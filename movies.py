@@ -29,18 +29,26 @@ def add_movies(db):
     likes = 0
     dislikes = 0
 
-    collection.insert({
-        "_id": add_args[0],
-        "title": add_args[1],
-        "category": add_args[2],
-        "synopsis": add_args[3],
-        "distribution": distribution,
-        "release_date": add_args[5],
-        "duration": add_args[6],
-        "likes": likes,
-        "dislikes": dislikes
-    })
-    return page_return('SUCCESS', 200, 'Film ajouté')
+    complete = True
+    for arg in add_args:
+        if arg is None or arg == "":
+            complete = False
+
+    if complete:
+        collection.insert({
+            "_id": int(add_args[0]),
+            "title": add_args[1],
+            "category": add_args[2],
+            "synopsis": add_args[3],
+            "distribution": distribution,
+            "release_date": add_args[5],
+            "duration": add_args[6],
+            "likes": likes,
+            "dislikes": dislikes
+        })
+        return page_return('SUCCESS', 200, 'Film ajouté')
+    else:
+        return page_return('ERROR', 400, 'Argument(s) incorrect')
 
 
 def delete_movie(db):
