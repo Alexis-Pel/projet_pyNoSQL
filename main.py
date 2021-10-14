@@ -215,7 +215,6 @@ def del_actors():
     collection = db["actors"]
     del_args = get_args(['id', 'name', 'age', 'genre'])
 
-
     show = collection.find_one({"_id": del_args[0]})
 
     if show is not None:
@@ -260,6 +259,48 @@ def find_actors():
         return page_return('SUCCESS', 200, 'Aucun acteur')
 
     return page_return('SUCCESS', 200, str(actors))
+
+
+@app.route("/actors", methods=["PATCH"])
+def edit_actor():
+    collection = db['actors']
+    actor_args = get_args(["name", "age", "genre", "id"])
+    args = {}
+
+    if actor_args[0] is None and actor_args[1] is None and actor_args[2] is None and actor_args[3] is None:
+        return page_return('ERROR', 400, 'Aucun paramètre')
+
+    for i in range(len(actor_args)):
+        if actor_args[i] is not None:
+            if not actor_args[i].isalnum():
+                return page_return('ERROR', 400, 'Veuillez supprimer les caractères speciaux')
+            if i == 0:
+                if actor_args[i].isdigit():
+                    return page_return('ERROR', 400, 'Erreur dans le paramètre NAME')
+                else:
+                    args['name'] = actor_args[i]
+            elif i == 1:
+                args['age'] = actor_args[i]
+            elif i == 2:
+                if actor_args[i].isdigit():
+                    return page_return('ERROR', 400, 'Erreur dans le paramètre GENRE')
+                elif actor_args[i] != "Homme" and actor_args[i] != "Femme" and actor_args[i] != "Non binaire":
+                    return page_return('ERROR', 400, 'Genre : Homme, Femme, Non binaire')
+                else:
+                    args['genre'] = actor_args[i]
+            elif i == 3:
+                if not actor_args[i].isdigit():
+                    return page_return('ERROR', 400, 'Erreur dans le paramètre ID')
+        else:
+            if actor_args[3] is None:
+                return page_return('ERROR', 400, "Pas d'ID")
+
+    actor = collection.find_one({'_id': actor_args[3]})
+    if actor is None:
+        return page_return("ERROR", 404, "Acteur Introuvable")
+    else:
+        collection.update_one(actor, {'$set': args})
+        return page_return("SUCCESS", 200, "Acteur Modifié")
 
 
 if __name__ == '__main__':
