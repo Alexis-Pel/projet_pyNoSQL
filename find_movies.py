@@ -35,6 +35,6 @@ def find_movies(db):
     else:
         return page_return('ERROR', 200, 'Verifiez paramètres')
     if len(movies) == 0:
-        return page_return('SUCCESS', 200, 'Aucun acteur')
+        return page_return('SUCCESS', 200, 'Aucun film trouvé')
 
     return page_return('SUCCESS', 200, str(movies))
