@@ -26,7 +26,7 @@ def add_actors(db):
     add_args = get_args(['id', 'name', 'age', 'genre'])
     complete = True
     for arg in add_args:
-        if arg is None or arg == "":
+        if (arg is None or arg == "") and arg.isdigit():
             complete = False
 
     if complete:
