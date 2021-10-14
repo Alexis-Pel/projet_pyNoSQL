@@ -58,6 +58,10 @@ def del_actors(db):
 
 
 def edit_actor(db):
+    """
+    Cette fonction permet de modifier un actor dans la base de données
+    :return: string: Message de succès ou erreur
+    """
     collection = db['actors']
     actor_args = get_args(["name", "age", "genre", "id"])
     args = {}

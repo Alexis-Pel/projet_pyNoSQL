@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import os
 from vote import vote_main
 from find_movies import find_movies
-from movies import movies, add_movies, delete_movie
+from movies import movies, add_movies, delete_movie, edit_movie
 from actors import add_actors, del_actors, actors, edit_actor
 from find_actors import find_actors
 from assets.pageReturn import page_return
@@ -71,6 +71,10 @@ def find_actor():
 @app.route("/actors", methods=["PATCH"])
 def edit_actors():
     return edit_actor(db)
+
+@app.route("/movies", methods=["PATCH"])
+def edit_movies():
+    return edit_movie(db)
 
 
 if __name__ == '__main__':
