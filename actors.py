@@ -47,8 +47,10 @@ def del_actors(db):
     """
     collection = db["actors"]
     del_args = get_args(['id', 'name', 'age', 'genre'])
-
-    show = collection.find_one({"_id": int(del_args[0])})
+    try:
+        show = collection.find_one({"_id": int(del_args[0])})
+    except:
+        return page_return('ERROR', 400, "Verifiez l'id")
 
     if show is not None:
         collection.delete_one(show)
@@ -73,13 +75,16 @@ def edit_actor(db):
         if actor_args[i] is not None:
             if not actor_args[i].isalnum():
                 return page_return('ERROR', 400, 'Veuillez supprimer les caractères speciaux')
+
             if i == 0:
                 if actor_args[i].isdigit():
                     return page_return('ERROR', 400, 'Erreur dans le paramètre NAME')
                 else:
                     args['name'] = actor_args[i]
+
             elif i == 1:
                 args['age'] = actor_args[i]
+
             elif i == 2:
                 if actor_args[i].isdigit():
                     return page_return('ERROR', 400, 'Erreur dans le paramètre GENRE')
@@ -87,6 +92,7 @@ def edit_actor(db):
                     return page_return('ERROR', 400, 'Genre : Homme, Femme, Non binaire')
                 else:
                     args['genre'] = actor_args[i]
+
             elif i == 3:
                 if not actor_args[i].isdigit():
                     return page_return('ERROR', 400, 'Erreur dans le paramètre ID')

@@ -72,6 +72,7 @@ def find_actor():
 def edit_actors():
     return edit_actor(db)
 
+
 @app.route("/movies", methods=["PATCH"])
 def edit_movies():
     return edit_movie(db)

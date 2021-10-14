@@ -50,8 +50,10 @@ def delete_movie(db):
     """
     collection = db["movies"]
     args = get_args(["id"])
-
-    show = collection.find_one({"_id": int(args[0])})
+    try:
+        show = collection.find_one({"_id": int(args[0])})
+    except:
+        return page_return('ERROR', 400, "Verifiez l'id")
 
     if show is not None:
         collection.delete_one(show)
