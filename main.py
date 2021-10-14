@@ -36,6 +36,10 @@ def home():
 
 @app.route("/movies", methods=["GET"])
 def movies():
+    """
+    Permet d'afficher une liste des films
+    :return: type: json : Si Acteurs : Liste des films | Si non : 'No Movies' / Code html
+    """
     collection = db["movies"]
     movie_list = []
     for movie in collection.find():
