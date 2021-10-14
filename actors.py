@@ -24,12 +24,18 @@ def add_actors(db):
     """
     collection = db["actors"]
     add_args = get_args(['id', 'name', 'age', 'genre'])
-    collection.insert({
-        "_id": add_args[0],
-        "name": add_args[1],
-        "age": add_args[2],
-        "genre": add_args[3]
-    })
+    complete = True
+    for arg in add_args:
+        if arg is None or arg == "":
+            complete = False
+
+    if complete:
+        collection.insert({
+            "_id": int(add_args[0]),
+            "name": add_args[1],
+            "age": add_args[2],
+            "genre": add_args[3]
+        })
 
     return page_return('SUCCESS', 200, 'Actors About')
 
@@ -42,7 +48,7 @@ def del_actors(db):
     collection = db["actors"]
     del_args = get_args(['id', 'name', 'age', 'genre'])
 
-    show = collection.find_one({"_id": del_args[0]})
+    show = collection.find_one({"_id": int(del_args[0])})
 
     if show is not None:
         collection.delete_one(show)
