@@ -15,18 +15,18 @@ def vote_main(id, db):
     like, dislike = args[0], args[1]
     movie = collection.find_one({'_id': id})
 
-    if movie is None:
+    if movie is not None:
+        actual_likes = movie['likes']
+        actual_dislikes = movie['dislikes']
+
+        if like and dislike or like is None and dislike is None:
+            return page_return("ERROR", 400, "Veuillez vérifier le vote")
+        if like:
+            phrase = {'likes': int(actual_likes) + 1}
+        elif dislike:
+            phrase = {'dislikes': int(actual_dislikes) + 1}
+
+        collection.update_one(movie, {'$set': phrase})
+        return page_return('SUCCESS', 200, 'Vote effectué')
+    else:
         return page_return("ERROR", 404, "Film Introuvable")
-
-    actual_likes = movie['likes']
-    actual_dislikes = movie['dislikes']
-
-    if like and dislike or like is None and dislike is None:
-        return page_return("ERROR", 400, "Veuillez vérifier le vote")
-    if like:
-        phrase = {'likes': int(actual_likes) + 1}
-    elif dislike:
-        phrase = {'dislikes': int(actual_dislikes) + 1}
-
-    collection.update_one(movie, {'$set': phrase})
-    return page_return('SUCCESS', 200, 'Vote effectué')

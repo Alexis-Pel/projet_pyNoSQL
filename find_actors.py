@@ -15,24 +15,30 @@ def find_actors(db):
     if actor_args[0] is None and actor_args[1] is None and actor_args[2] is None:
         return page_return('ERROR', 400, 'Aucun paramètre de recherche')
 
-    if actor_args[0]:
-        if not actor_args[0].isalnum() or actor_args[0].isdigit():
-            return page_return('ERROR', 400, 'Erreur dans le paramètre NAME')
-        search['name'] = {'$regex': actor_args[0]}
+    for i in range(len(actor_args)):
+        if actor_args[i] is not None:
+            if i == 0:
+                if not actor_args[0].isalnum() or actor_args[0].isdigit():
+                    return page_return('ERROR', 400, 'Erreur dans le paramètre NAME')
+                else:
+                    search['name'] = {'$regex': actor_args[0]}
 
-    if actor_args[1]:
-        if not actor_args[1].isalnum():
-            return page_return('ERROR', 400, 'Erreur dans le paramètre AGE')
-        search['age'] = int(actor_args[1])
+            elif i == 1:
+                if not actor_args[1].isalnum():
+                    return page_return('ERROR', 400, 'Erreur dans le paramètre AGE')
+                else:
+                    search['age'] = actor_args[1]
 
-    if actor_args[2]:
-        search['genre'] = actor_args[2]
+            elif i == 2:
+                search['genre'] = actor_args[2]
+
     if not len(search) == 0:
         for actor in collections.find(search):
             actors.append(actor)
     else:
         return page_return('ERROR', 200, 'Verifiez paramètres')
+
     if len(actors) == 0:
         return page_return('SUCCESS', 200, 'Aucun acteur')
-
-    return page_return('SUCCESS', 200, str(actors))
+    else:
+        return page_return('SUCCESS', 200, str(actors))
