@@ -36,6 +36,10 @@ def home():
 
 @app.route("/movies", methods=["GET"])
 def movies():
+    """
+    Permet d'afficher une liste des films
+    :return: type: json : Si Acteurs : Liste des films | Si non : 'No Movies' / Code html
+    """
     collection = db["movies"]
     movie_list = []
     for movie in collection.find():
@@ -82,11 +86,10 @@ def delete_movie():
     collection = db["movies"]
     args = get_args(["id"])
 
-    movie_to_delete = {"_id": args[0]}
-    show = collection.find_one(movie_to_delete)
+    show = collection.find_one({"_id": args[0]})
 
     if show is not None:
-        collection.delete_one(movie_to_delete)
+        collection.delete_one(show)
         return page_return('SUCCESS', 200, "Film supprimé")
     else:
         return page_return('ERROR', 404, 'Aucun film à cet Id')
@@ -133,11 +136,18 @@ def find_movies():
 
 @app.route("/vote/<int:id>", methods=["POST"])
 def vote(id):
+    """
+    Permet d'ajouter un like / dislike à un film
+    :param id: L'id du film qui reçoit le vote
+    :return: type: json : Si film introuvable : 'film Introuvable' | Si pas de vote : 'Veuillez verifier le vote' |
+    Si correct  : 'Vote effectué' / code html
+    """
     global phrase
     collection = db["movies"]
     args = get_args(['like', 'dislike'])
     like, dislike = args[0], args[1]
     movie = collection.find_one({'_id': id})
+
     if movie is None:
         return page_return("ERROR", 404, "Film Introuvable")
 
@@ -157,6 +167,10 @@ def vote(id):
 
 @app.route("/actors", methods=["GET"])
 def actors():
+    """
+    Permet d'afficher une liste des acteurs
+    :return: type: json : Si Acteurs : Liste des acteurs | Si non : 'No Actors' / Code html
+    """
     collection = db["actors"]
     actor_list = []
     for actor in collection.find():
@@ -169,10 +183,12 @@ def actors():
 
 @app.route("/actors", methods=["POST"])
 def add_actors():
+    """
+    Cette fonction permet d'ajouter un actor dans la base de données
+    :return: string: Message de succès ou erreur
+    """
     collection = db["actors"]
-    add_args = ['id', 'name', 'age', 'genre']
-    add_args = get_args(add_args)
-
+    add_args = get_args(['id', 'name', 'age', 'genre'])
     collection.insert({
         "_id": add_args[0],
         "name": add_args[1],
@@ -185,22 +201,29 @@ def add_actors():
 
 @app.route("/actors", methods=["DELETE"])
 def del_actors():
+    """
+    Cette fonction permet de supprimer un actor dans la base de données
+    :return: string: Message de succès ou erreur
+    """
     collection = db["actors"]
-    add_args = ['id', 'name', 'age', 'genre']
-    add_args = get_args(add_args)
+    del_args = get_args(['id', 'name', 'age', 'genre'])
 
-    collection.delete_one({
-        "_id": add_args[0],
-        "name": add_args[1],
-        "age": add_args[2],
-        "genre": add_args[3]
-    })
 
-    return page_return('SUCCESS', 200, 'Actors Delete')
+    show = collection.find_one({"_id": del_args[0]})
+
+    if show is not None:
+        collection.delete_one(show)
+        return page_return('SUCCESS', 200, "Actor Delete")
+    else:
+        return page_return('ERROR', 404, 'Aucun acteur à cet Id')
 
 
 @app.route("/actors/find")
 def find_actors():
+    """
+    Cette fonction permet de chercher un actor dans la base de données
+    :return: string: Message de succès ou erreur
+    """
     collections = db['actors']
     search = {}
     actors = []
