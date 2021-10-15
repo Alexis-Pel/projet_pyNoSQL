@@ -1,3 +1,5 @@
+import re
+
 from assets.get_args import get_args
 from assets.pageReturn import page_return
 
@@ -18,12 +20,12 @@ def find_movies(db):
     if movie_args[0]:
         if movie_args[0].isdigit():
             return page_return('ERROR', 400, 'Erreur dans le paramètre TITLE')
-        search['title'] = {'$regex': movie_args[0]}
+        search['title'] = {'$regex': re.compile(movie_args[0], re.IGNORECASE)}
 
     if movie_args[1]:
         if not movie_args[1].isalnum() or movie_args[1].isdigit():
             return page_return('ERROR', 400, 'Erreur dans le paramètre CATEGORY')
-        search['category'] = {'$regex': movie_args[1]}
+        search['category'] = {'$regex': re.compile(movie_args[1], re.IGNORECASE)}
 
     if movie_args[2]:
         if not movie_args[2].isalnum() or not movie_args[2].isdigit():

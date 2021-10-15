@@ -1,3 +1,4 @@
+import re
 from assets.pageReturn import page_return
 from assets.get_args import get_args
 
@@ -21,7 +22,7 @@ def find_actors(db):
                 if not actor_args[0].isalnum() or actor_args[0].isdigit():
                     return page_return('ERROR', 400, 'Erreur dans le paramètre NAME')
                 else:
-                    search['name'] = {'$regex': actor_args[0]}
+                    search['name'] = {'$regex': re.compile(actor_args[0], re.IGNORECASE)}
 
             elif i == 1:
                 if not actor_args[1].isalnum():
