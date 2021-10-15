@@ -100,7 +100,7 @@ def edit_actor(db):
             if actor_args[3] is None:
                 return page_return('ERROR', 400, "Pas d'ID")
 
-    actor = collection.find_one({'_id': actor_args[3]})
+    actor = collection.find_one({'_id': int(actor_args[3])})
     if actor is None:
         return page_return("ERROR", 404, "Acteur Introuvable")
     else:
