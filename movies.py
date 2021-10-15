@@ -15,7 +15,8 @@ def movies(db):
     for movie in collection.find():
         for actor_id in movie['distribution']:
             actor = actor_collection.find_one({'_id': actor_id})
-            actors_list.append(actor['name'])
+            if actor is not None:
+                actors_list.append(actor['name'])
         movie['distribution'] = actors_list
 
         movie_list.append(movie)
@@ -36,11 +37,13 @@ def add_movies(db):
     distribution = []
     for i in range(len(add_args)):
         if add_args[i] is not None:
+
             if i == 0:
                 if not add_args[i].isdigit():
                     return page_return('ERROR', 400, 'Id incorrect')
                 elif collection.find_one({'_id': int(add_args[i])}) is not None:
                     return page_return('ERROR', 409, 'Film existant')
+
             elif i == 4:
                 actors_list = add_args[4].split(',')
                 for actor in actors_list:
@@ -107,6 +110,7 @@ def edit_movie(db):
         if movie_args[i] is not None:
             if not movie_args[i].isalnum():
                 return page_return('ERROR', 400, 'Veuillez supprimer les carctères spéciaux')
+
             if i == 0:
                 if movie_args[i].isdigit():
                     return page_return('ERROR', 400, 'Erreur dans le paramètre Title')
