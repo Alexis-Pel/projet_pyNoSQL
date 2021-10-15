@@ -11,14 +11,14 @@ def movies(db):
     collection = db["movies"]
     actor_collection = db['actors']
     movie_list = []
-    actors_list = []
+
     for movie in collection.find():
+        actors_list = []
         for actor_id in movie['distribution']:
             actor = actor_collection.find_one({'_id': actor_id})
             if actor is not None:
                 actors_list.append(actor['name'])
         movie['distribution'] = actors_list
-
         movie_list.append(movie)
     if len(movie_list) == 0:
         return page_return('SUCCESS', 200, 'No Movies')
@@ -138,7 +138,6 @@ def edit_movie(db):
                             actor_collection = db['actors']
                             actor_from_db = actor_collection.find_one(
                                 {'name': {'$regex': re.compile(actor, re.IGNORECASE)}})
-                            print(actor_from_db)
                             if actor_from_db is not None:
                                 patch_list.append(actor_from_db['_id'])
                             else:
