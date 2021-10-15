@@ -134,10 +134,11 @@ def edit_movie(db):
                     actors_list = actors_list.split(',')
                     patch_list = []
                     for actor in actors_list:
-                        if actor.isalnum():
+                        if not actor.isalnum():
                             actor_collection = db['actors']
                             actor_from_db = actor_collection.find_one(
                                 {'name': {'$regex': re.compile(actor, re.IGNORECASE)}})
+                            print(actor_from_db)
                             if actor_from_db is not None:
                                 patch_list.append(actor_from_db['_id'])
                             else:
@@ -164,7 +165,7 @@ def edit_movie(db):
             nones += 1
             if nones == len(movie_args):
                 return page_return('ERROR', 400, 'Aucun paramètre de recherche')
-            if movie_args[5] is None:
+            if movie_args[6] is None:
                 return page_return('ERROR', 400, "Pas d'ID")
 
     movie = collection.find_one({'_id': int(movie_args[6])})
