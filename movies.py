@@ -108,9 +108,6 @@ def edit_movie(db):
 
     for i in range(len(movie_args)):
         if movie_args[i] is not None:
-            if not movie_args[i].isalnum():
-                return page_return('ERROR', 400, 'Veuillez supprimer les carctères spéciaux')
-
             if i == 0:
                 if movie_args[i].isdigit():
                     return page_return('ERROR', 400, 'Erreur dans le paramètre Title')
