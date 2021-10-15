@@ -130,7 +130,9 @@ def edit_movie(db):
                 if movie_args[i].isdigit():
                     return page_return('ERROR', 400, 'Erreur dans le paramètre Distibution')
                 else:
-                    args['distribution'] = movie_args[i]
+                    actors_list = movie_args[i]
+                    actors_list = actors_list.split(',')
+                    args['distribution'] = actors_list
 
             elif i == 4:
                 if movie_args[i].isdigit():
