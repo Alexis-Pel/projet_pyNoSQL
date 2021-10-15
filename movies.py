@@ -1,5 +1,6 @@
 from assets.pageReturn import page_return
 from assets.get_args import get_args
+import re
 
 
 def movies(db):
@@ -8,8 +9,15 @@ def movies(db):
        :return: type: json : Si Acteurs : Liste des films | Si non : 'No Movies' / Code html
        """
     collection = db["movies"]
+    actor_collection = db['actors']
     movie_list = []
+    actors_list = []
     for movie in collection.find():
+        for actor_id in movie['distribution']:
+            actor = actor_collection.find_one({'_id': actor_id})
+            actors_list.append(actor['name'])
+        movie['distribution'] = actors_list
+
         movie_list.append(movie)
     if len(movie_list) == 0:
         return page_return('SUCCESS', 200, 'No Movies')
@@ -22,11 +30,34 @@ def add_movies(db):
     Cette fonction permet d'ajouter un film dans la base de données
     :return: string: Message de succès ou erreur
     """
+    global actors_list
     collection = db["movies"]
     add_args = get_args(['id', 'title', 'category', 'synopsis', 'distribution', 'release_date', 'duration'])
+    distribution = []
+    for i in range(len(add_args)):
+        if add_args[i] is not None:
+            if i == 0:
+                if not add_args[i].isdigit():
+                    return page_return('ERROR', 400, 'Id incorrect')
+                elif collection.find_one({'_id': int(add_args[i])}) is not None:
+                    return page_return('ERROR', 409, 'Film existant')
+            elif i == 4:
+                actors_list = add_args[4].split(',')
+                for actor in actors_list:
+                    if not actor.isalnum():
+                        actor_collection = db['actors']
+                        actor_from_db = actor_collection.find_one({'name': {'$regex': re.compile(actor, re.IGNORECASE)}})
+                        if actor_from_db is not None:
+                            distribution.append(actor_from_db['_id'])
+                        else:
+                            return page_return('ERROR', 404, 'Acteur Inexistant')
+                    else:
+                        return page_return('ERROR', 400, 'Distribution incorrect')
 
-    for arg in add_args:
-        if (arg is None or arg == "") and arg.isdigit():
+            elif i == 5 or i == 6:
+                if not add_args[i].isdigit():
+                    return page_return('ERROR', 400, f'release date ou duration incorrect')
+        else:
             return page_return('ERROR', 400, 'Argument(s) incorrect')
 
     collection.insert({
@@ -34,7 +65,7 @@ def add_movies(db):
         "title": add_args[1],
         "category": add_args[2],
         "synopsis": add_args[3],
-        "distribution": add_args[4].split(','),
+        "distribution": distribution,
         "release_date": add_args[5],
         "duration": add_args[6],
         "likes": 0,

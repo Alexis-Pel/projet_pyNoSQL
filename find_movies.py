@@ -10,6 +10,7 @@ def find_movies(db):
     :return: Un message d'erreur ou de succès avec le film recherché
     """
     collections = db['movies']
+    actors_collection = db['actors']
     search = {}
     movies = []
 
@@ -38,5 +39,11 @@ def find_movies(db):
         return page_return('ERROR', 200, 'Verifiez paramètres')
     if len(movies) == 0:
         return page_return('SUCCESS', 200, 'Aucun film trouvé')
-
+    else:
+        for movie in movies:
+            actors_list = []
+            for actor_id in movie['distribution']:
+                actor_find = actors_collection.find_one({'_id':actor_id})
+                actors_list.append(actor_find['name'])
+            movie['distribution'] = actors_list
     return page_return('SUCCESS', 200, str(movies))
