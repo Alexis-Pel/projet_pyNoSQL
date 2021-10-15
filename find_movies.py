@@ -43,7 +43,7 @@ def find_movies(db):
         for movie in movies:
             actors_list = []
             for actor_id in movie['distribution']:
-                actor_find = actors_collection.find_one({'_id':actor_id})
+                actor_find = actors_collection.find_one({'_id': actor_id})
                 actors_list.append(actor_find['name'])
             movie['distribution'] = actors_list
     return page_return('SUCCESS', 200, str(movies))

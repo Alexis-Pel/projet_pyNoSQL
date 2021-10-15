@@ -132,7 +132,19 @@ def edit_movie(db):
                 else:
                     actors_list = movie_args[i]
                     actors_list = actors_list.split(',')
-                    args['distribution'] = actors_list
+                    patch_list = []
+                    for actor in actors_list:
+                        if actor.isalnum():
+                            actor_collection = db['actors']
+                            actor_from_db = actor_collection.find_one(
+                                {'name': {'$regex': re.compile(actor, re.IGNORECASE)}})
+                            if actor_from_db is not None:
+                                patch_list.append(actor_from_db['_id'])
+                            else:
+                                return page_return('ERROR', 404, 'Acteur Inexistant')
+                        else:
+                            return page_return('ERROR', 400, 'Distribution incorrect')
+                    args['distribution'] = patch_list
 
             elif i == 4:
                 if movie_args[i].isdigit():
